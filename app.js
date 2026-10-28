@@ -77,10 +77,26 @@ function renderVault(){
   const interviews = jobs.filter(j=>["interview scheduled","phone screen scheduled","offer"].includes((j.status||"").toLowerCase())).length;
   document.getElementById("job-stats").innerHTML = `<div class="stat"><b>${jobs.length}</b><span>total applications</span></div><div class="stat"><b>${thisWeek}</b><span>past 7 days</span></div><div class="stat"><b>${interviews}</b><span>in interview stage</span></div>`;
   const fmtDate = d => d ? new Date(d+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"}) : "";
-  document.getElementById("jobs").innerHTML = jobs.length ? '<div class="table-wrap"><table class="job-table"><thead><tr><th>Company</th><th>Role</th><th>Applied</th><th>Status</th><th>Location</th><th>Salary</th><th>About</th><th>Link</th><th>Notes</th></tr></thead><tbody>' + jobs.slice().sort((a,b)=>(b.date_applied||"").localeCompare(a.date_applied||"")).map(j=>
-    `<tr><td><b>${j.company||"?"}</b></td><td>${j.role||""}</td><td>${fmtDate(j.date_applied)}</td><td>${j.status||"applied"}</td><td>${j.location||""}</td><td>${j.salary||""}</td><td class="about">${j.blurb||""}</td><td>${j.url?`<a class="joblink" href="${j.url}" target="_blank" rel="noopener">${j.url_label||"View posting &rarr;"}</a>`:""}</td><td class="notes">${j.notes||""}</td></tr>`).join("") + '</tbody></table></div>'
+  const sorted = jobs.slice().sort((x,y)=>(y.date_applied||"").localeCompare(x.date_applied||""));
+  document.getElementById("jobs").innerHTML = jobs.length ? '<div class="table-wrap"><table class="job-table"><thead><tr><th>Company</th><th>Role</th><th>Applied</th><th>Status</th><th>Location</th><th>Salary</th><th></th></tr></thead><tbody>' + sorted.map(j=>
+    `<tr class="job-row" onclick="toggleJob(this)"><td><b>${j.company||"?"}</b></td><td>${j.role||""}</td><td>${fmtDate(j.date_applied)}</td><td>${j.status||"applied"}</td><td>${j.location||""}</td><td>${j.salary||""}</td><td class="exp-col"><span class="caret">&#9656;</span></td></tr><tr class="job-detail"><td colspan="7">${j.blurb?`<div class="jd"><b>About:</b> ${j.blurb}</div>`:""}${j.url?`<div class="jd"><b>Link:</b> <a class="joblink" href="${j.url}" target="_blank" rel="noopener">${j.url_label||"View posting &rarr;"}</a></div>`:""}${j.notes?`<div class="jd"><b>Notes:</b> ${j.notes}</div>`:""}</td></tr>`).join("") + '</tbody></table></div>'
     : '<p class="empty">No applications logged yet.</p>';
-  personList("appointments", v.appointments, a=>`<div class="item"><b>${a.title||a.provider||"?"}</b>${a.date?` <span class="sub">${new Date(a.date+"T12:00:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}</span>`:""}${a.notes?`<div class="sub">${a.notes}</div>`:""}</div>`);
+  // This week's calendar events (Google + pinned), undated pinned appointments after
+  const apptEl = document.getElementById("appointments");
+  const t0 = new Date(); t0.setHours(0,0,0,0);
+  const ws = new Date(t0); ws.setDate(ws.getDate()-ws.getDay());
+  const we = new Date(ws); we.setDate(we.getDate()+6);
+  const tk = s => (s||"").toLowerCase().replace(/[^a-z ]/g," ").split(/\s+/).filter(w=>w.length>2);
+  let pins = ((VAULT&&VAULT.calendar)||[]).filter(c=>c.date).map(c=>Object.assign({},c,{d:new Date(c.date+"T12:00:00")}));
+  const ge = ((VAULT&&VAULT.gcal)||[]).filter(c=>c.date).map(c=>Object.assign({},c,{d:new Date(c.date+"T12:00:00"),g:1}));
+  const evs=[];
+  for(const g of ge){ pins = pins.filter(p=>!(p.d.toDateString()===g.d.toDateString()&&tk(p.title).every(t=>tk(g.title).includes(t)))); evs.push(g); }
+  evs.push(...pins);
+  const tparse = s => { const n = Date.parse("2000-01-01 "+(s||"")); return isNaN(n)?0:n; };
+  const week = evs.filter(e=>e.d>=ws&&e.d<=we).sort((x,y)=>x.d-y.d||tparse(x.time)-tparse(y.time));
+  const undated = ((VAULT&&VAULT.appointments)||[]).filter(x=>!x.date);
+  apptEl.innerHTML = week.length ? week.map(e=>`<div class="item"><b>${e.title}</b> <span class="sub">${e.d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})}${e.time?" \u00B7 "+e.time:""}</span></div>`).join("") : '<p class="empty">Nothing on the calendar this week.</p>';
+  if(undated.length) apptEl.innerHTML += undated.map(x=>`<div class="item"><b>${x.title||x.provider||"?"}</b>${x.notes?`<div class="sub">${x.notes}</div>`:""}</div>`).join("");
   personList("emails", v.important_emails, e=>`<div class="item"><b>${e.subject||"?"}</b> <span class="sub">${e.from||""}${e.date?" &middot; "+e.date:""}${e.why?" &middot; "+e.why:""}</span></div>`);
   renderSchedule();
   const jent = v.journal_entries||[];
@@ -88,6 +104,14 @@ function renderVault(){
   const doy = Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/864e5);
   document.getElementById("prompt").textContent = window.JOURNAL_PROMPTS[doy % window.JOURNAL_PROMPTS.length];
   document.getElementById("vault-editor").value = JSON.stringify(VAULT, null, 2);
+}
+
+function toggleJob(tr){
+  const d = tr.nextElementSibling;
+  if(!d || !d.classList.contains("job-detail")) return;
+  const open = d.classList.toggle("open");
+  const c = tr.querySelector(".caret");
+  if(c) c.innerHTML = open ? "&#9662;" : "&#9656;";
 }
 
 async function downloadVault(){

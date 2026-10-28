@@ -62,9 +62,14 @@ select{background:var(--card);color:var(--text);border:1px solid var(--line);bor
 .job-table{width:100%;border-collapse:collapse;font-size:.82rem}
 .job-table th{background:#0e1018;color:var(--muted);text-align:left;padding:8px;border:1px solid var(--line);font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
 .job-table td{padding:8px;border:1px solid var(--line);vertical-align:top}
-.job-table tbody tr:nth-child(even){background:rgba(255,255,255,.02)}
-.job-table td.about{color:var(--muted);font-size:.8rem;max-width:260px}
-.job-table td.notes{color:var(--muted);font-size:.8rem;width:300px;max-width:380px}
+.job-table tbody tr.job-row:nth-child(4n+3){background:rgba(255,255,255,.02)}
+.job-table tr.job-row{cursor:pointer}
+.job-table .exp-col{width:34px;text-align:right;color:var(--muted)}
+.job-table .caret{display:inline-block;font-size:.8rem}
+.job-table tr.job-detail{display:none}
+.job-table tr.job-detail.open{display:table-row}
+.job-table tr.job-detail td{background:#0b0d14;color:var(--muted);font-size:.8rem}
+.job-detail .jd{padding:2px 0}
 
 .sched-month{color:var(--muted);font-size:.8rem;text-transform:none;letter-spacing:0;font-weight:400}
 .schedule-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:14px}
