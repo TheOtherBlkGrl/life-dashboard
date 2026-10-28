@@ -1,0 +1,45 @@
+// Public (non-sensitive) data. Sensitive data lives encrypted in data/vault.enc.
+window.NATAL = {
+  born: "August 1, 1987, 12:19 AM, Walnut Creek CA",
+  sun: {lon: 128.7, label: "Sun"},
+  moon: {lon: 200.6, label: "Moon"},
+  mercury: {lon: 110.7, label: "Mercury"},
+  venus: {lon: 122.7, label: "Venus"},
+  mars: {lon: 136.5, label: "Mars"},
+  ascendant: {lon: 41.9, label: "Rising"},
+  midheaven: {lon: 295.1, label: "Midheaven"}
+};
+window.SIGNS = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
+window.JOURNAL_PROMPTS = [
+  "What drained me today, and what refilled me?",
+  "What is one thing I handled better than I would have a year ago?",
+  "Who did I help today, even in a small way?",
+  "What am I avoiding, and what is the first tiny step?",
+  "What did my body try to tell me today?",
+  "Where did I see something beautiful today?",
+  "What would steady-me tell anxious-me right now?",
+  "What am I proud of this week?",
+  "What boundary do I need to hold tomorrow?",
+  "What is going right that I keep forgetting to notice?",
+  "What did I learn about myself at work today?",
+  "If tomorrow had one hour just for me, what would I do with it?",
+  "What am I grateful for that I did not choose?",
+  "What story am I telling myself that might not be true?",
+  "What does rest look like for me, actually?",
+  "Who deserves a thank-you from me this week?",
+  "What is one thing I want more of next month?",
+  "What felt heavy today? Name it, then set it down.",
+  "What did I say yes to that I wanted to say no to?",
+  "What small win am I letting slide by uncounted?",
+  "Where in my life am I planting seeds right now?",
+  "What would I do if I trusted myself completely?",
+  "What is my gut saying about something I have been weighing?",
+  "What made me laugh today?",
+  "What do I need to forgive myself for?",
+  "What does enough look like today?",
+  "What am I building, even slowly?",
+  "Who am I becoming?",
+  "What is one thing I can let be unfinished tonight?",
+  "What do I want the next five years to feel like?",
+  "What did today cost me, and what did it give me?"
+];

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Clarissa's Dashboard</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
+</head>
+<body>
+<div id="lock" class="lock-screen">
+  <div class="lock-card">
+    <h1>Clarissa's Dashboard</h1>
+    <p class="lock-sub">Enter your 6-digit PIN</p>
+    <input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="••••••">
+    <button id="unlock-btn" onclick="unlock()">Unlock</button>
+    <p id="lock-error" class="lock-error"></p>
+  </div>
+</div>
+<main id="app" class="hidden">
+  <header class="top">
+    <div>
+      <h1 id="greeting">Good evening, Clarissa</h1>
+      <p id="today" class="date-line"></p>
+    </div>
+    <button class="ghost" onclick="lockSite()">Lock</button>
+  </header>
+  <section class="grid">
+    <article class="card span2">
+      <h2>Astrology</h2>
+      <div id="natal" class="natal-row"></div>
+      <h3>Today's sky</h3>
+      <div id="transits"></div>
+      <h3>Aspects to your chart</h3>
+      <div id="aspects"></div>
+    </article>
+    <article class="card">
+      <h2>Job Applications</h2>
+      <div id="job-stats" class="stat-row"></div>
+      <div id="jobs"></div>
+    </article>
+    <article class="card">
+      <h2>Appointments</h2>
+      <div id="appointments"></div>
+    </article>
+    <article class="card">
+      <h2>Medications</h2>
+      <div id="medications"></div>
+    </article>
+    <article class="card">
+      <h2>Upcoming Bills</h2>
+      <div id="bills"></div>
+    </article>
+    <article class="card">
+      <h2>Important Emails</h2>
+      <div id="emails"></div>
+    </article>
+    <article class="card">
+      <h2>Calendar</h2>
+      <div id="calendar"></div>
+    </article>
+    <article class="card">
+      <h2>Journal</h2>
+      <p class="prompt" id="prompt"></p>
+      <div id="journal"></div>
+    </article>
+    <article class="card span2">
+      <details>
+        <summary>Manage data (encrypted)</summary>
+        <p class="hint">Edit the vault JSON below, then download the new vault.enc and replace it in the repo (or ask Fo to). Everything stays encrypted at rest.</p>
+        <textarea id="vault-editor" spellcheck="false"></textarea>
+        <button onclick="downloadVault()">Download updated vault.enc</button>
+      </details>
+    </article>
+  </section>
+</main>
+<script src="data/public.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
