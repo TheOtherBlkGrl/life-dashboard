@@ -1,6 +1,6 @@
 :root{--bg:#12141d;--card:#1a1d29;--line:#2a2e40;--text:#e8e6e3;--muted:#9a9db1;--gold:#e0b354;--green:#7fb685;}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.5}
-.hidden{display:none}
+.hidden{display:none!important}
 .lock-screen{min-height:100vh;display:flex;align-items:center;justify-content:center}
 .lock-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:40px;text-align:center;max-width:340px}
 .lock-card h1{font-size:1.3rem;margin:0 0 4px}
