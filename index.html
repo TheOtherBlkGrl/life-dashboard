@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Clarissa's Dashboard</title>
-<link rel="stylesheet" href="style.css?v=12">
+<link rel="stylesheet" href="style.css?v=13">
 <script src="js/astronomy.browser.min.js"></script>
 </head>
-<body>
+<body data-page="home">
 <div id="lock" class="lock-screen">
   <div class="lock-card">
     <h1>Clarissa's Dashboard</h1>
     <p class="lock-sub">Enter your 6-digit PIN</p>
-    <input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="••••••">
+    <input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;">
     <button id="unlock-btn" onclick="unlock()">Unlock</button>
     <p id="lock-error" class="lock-error"></p>
   </div>
@@ -21,51 +21,37 @@
 <main id="app" class="hidden">
   <header class="top">
     <div>
-      <h1 id="greeting">Good evening, Clarissa</h1>
+      <h1 id="greeting">Dashboard</h1>
       <p id="today" class="date-line"></p>
     </div>
     <button class="ghost" onclick="lockSite()">Lock</button>
   </header>
+  <nav class="nav">
+    <a href="index.html" class="active">Home</a><a href="jobs.html">Jobs</a><a href="journal.html">Journal</a><a href="calendar.html">Calendar</a>
+  </nav>
+
   <div class="banner-wrap wide">
     <article class="card banner">
       <h2>Horoscope</h2>
       <p id="horoscope" class="horoscope"></p>
       <p class="prompt-line"><span class="plabel">Journal prompt</span><span id="prompt"></span></p>
-      <div id="journal" class="journal-top"></div>
-    </article>
-  </div>
-  <div class="banner-wrap">
-    <article class="card banner">
-      <div class="banner-head">
-        <h2>Schedule <span id="sched-month" class="sched-month"></span></h2>
-        <select id="schedule-range" onchange="renderSchedule(true)">
-          <option value="3">Next 3 days</option>
-          <option value="7">Next week</option>
-          <option value="14" selected>Next 2 weeks</option>
-          <option value="30">Next month</option>
-        </select>
-      </div>
-      <div id="schedule"></div>
-      <div class="schedule-cols">
-        <div>
-          <h3>This week</h3>
-          <div id="appointments"></div>
-        </div>
-      </div>
-    </article>
-  </div>
-  <div class="banner-wrap">
-    <article class="card">
-      <h2>Job Applications</h2>
-      <div id="job-stats" class="stat-row"></div>
-      <div id="jobs"></div>
     </article>
   </div>
   <section class="grid">
-    <article class="card">
-      <h2>Important Emails</h2>
-      <div id="emails"></div>
-    </article>
+    <a class="card hub-card" href="jobs.html">
+      <h2>Job tracking</h2>
+      <p><b id="home-jobs">&hellip;</b> applications tracked &middot; full table, notes and links</p>
+    </a>
+    <a class="card hub-card" href="journal.html">
+      <h2>Journal &amp; horoscope</h2>
+      <p>Daily horoscope read from your chart, your journal prompt and entries</p>
+    </a>
+    <a class="card hub-card" href="calendar.html">
+      <h2>Calendar</h2>
+      <p>Planning grid synced from your Google Calendar, plus a direct link to the real thing</p>
+    </a>
+  </section>
+  <section class="grid">
     <article class="card span2">
       <details>
         <summary>Manage data (encrypted)</summary>
@@ -77,6 +63,6 @@
   </section>
 </main>
 <script src="data/public.js"></script>
-<script src="app.js?v=12"></script>
+<script src="app.js?v=13"></script>
 </body>
 </html>

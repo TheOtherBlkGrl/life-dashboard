@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Calendar - Clarissa's Dashboard</title>
+<link rel="stylesheet" href="style.css?v=13">
+<script src="js/astronomy.browser.min.js"></script>
+</head>
+<body data-page="calendar">
+<div id="lock" class="lock-screen">
+  <div class="lock-card">
+    <h1>Clarissa's Dashboard</h1>
+    <p class="lock-sub">Enter your 6-digit PIN</p>
+    <input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;">
+    <button id="unlock-btn" onclick="unlock()">Unlock</button>
+    <p id="lock-error" class="lock-error"></p>
+  </div>
+</div>
+<main id="app" class="hidden">
+  <header class="top">
+    <div>
+      <h1 id="greeting">Dashboard</h1>
+      <p id="today" class="date-line"></p>
+    </div>
+    <button class="ghost" onclick="lockSite()">Lock</button>
+  </header>
+  <nav class="nav">
+    <a href="index.html">Home</a><a href="jobs.html">Jobs</a><a href="journal.html">Journal</a><a href="calendar.html" class="active">Calendar</a>
+  </nav>
+
+  <div class="banner-wrap wide">
+    <article class="card banner">
+      <div class="banner-head">
+        <h2>Schedule <span id="sched-month" class="sched-month"></span></h2>
+        <select id="schedule-range" onchange="renderSchedule(true)">
+          <option value="3">Next 3 days</option>
+          <option value="7">Next week</option>
+          <option value="14" selected>Next 2 weeks</option>
+          <option value="30">Next month</option>
+        </select>
+      </div>
+      <div id="schedule"></div>
+      <div class="schedule-cols">
+        <div>
+          <h3>This week</h3>
+          <div id="appointments"></div>
+        </div>
+      </div>
+    </article>
+  </div>
+  <div class="banner-wrap wide">
+    <article class="card">
+      <h2>Google Calendar</h2>
+      <p class="hint">The grid above is your Google Calendar as synced into the encrypted vault. For the live signed-in view with your Tasks sidebar, open the real thing:</p>
+      <p class="gcal-link"><a class="joblink" href="https://calendar.google.com/" target="_blank" rel="noopener">Open Google Calendar &rarr;</a></p>
+    </article>
+  </div>
+</main>
+<script src="data/public.js"></script>
+<script src="app.js?v=13"></script>
+</body>
+</html>
