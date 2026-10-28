@@ -32,7 +32,7 @@ h3{font-size:.85rem;margin:14px 0 6px;color:var(--muted);text-transform:uppercas
 textarea{width:100%;min-height:180px;background:#0e1018;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px;font-family:ui-monospace,monospace;font-size:.82rem;margin-bottom:10px}
 @media(max-width:700px){.span2{grid-column:span 1}}
 
-.horoscope{font-size:1.05rem;line-height:1.75}
+.horoscope{font-size:.92rem;line-height:1.65;color:var(--muted)}
 select{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;margin-bottom:10px}
 
 .banner-wrap{max-width:960px;margin:16px auto 0;padding:0 16px}
@@ -42,3 +42,15 @@ select{background:var(--card);color:var(--text);border:1px solid var(--line);bor
 .blurb{color:var(--muted);font-size:.85rem;margin-top:4px}
 .joblink{color:var(--gold);font-size:.84rem;text-decoration:none}
 .joblink:hover{text-decoration:underline}
+
+.prompt-line{margin:12px 0 0;padding-top:10px;border-top:1px solid var(--line);color:var(--muted);font-size:.88rem}
+.plabel{color:var(--gold);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;margin-right:8px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.day-cell{background:#0e1018;border:1px solid var(--line);border-radius:10px;min-height:74px;padding:8px;overflow:hidden}
+.day-cell.today{border-color:var(--gold)}
+.day-num{font-size:.78rem;color:var(--muted);margin-bottom:6px}
+.day-cell.today .day-num{color:var(--gold);font-weight:700}
+.day-ev{font-size:.76rem;background:#1a1d29;border-radius:6px;padding:3px 6px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.job-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.job-card{background:#0e1018;border:1px solid var(--line);border-radius:10px;padding:12px}
+@media(max-width:700px){.cal-grid{grid-template-columns:repeat(3,1fr)}}

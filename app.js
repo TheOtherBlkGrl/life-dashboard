@@ -76,8 +76,8 @@ function renderVault(){
   const thisWeek = jobs.filter(j=>j.date_applied && new Date(j.date_applied) >= weekAgo).length;
   const interviews = jobs.filter(j=>["interview scheduled","phone screen scheduled","offer"].includes((j.status||"").toLowerCase())).length;
   document.getElementById("job-stats").innerHTML = `<div class="stat"><b>${jobs.length}</b><span>total applications</span></div><div class="stat"><b>${thisWeek}</b><span>past 7 days</span></div><div class="stat"><b>${interviews}</b><span>in interview stage</span></div>`;
-  document.getElementById("jobs").innerHTML = jobs.length ? jobs.slice().sort((a,b)=>(b.date_applied||"").localeCompare(a.date_applied||"")).map(j=>
-    `<div class="item"><b>${j.company||"?"}</b>${j.role?" &mdash; "+j.role:""}<div class="sub">${j.date_applied?new Date(j.date_applied+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"}):"date?"} &middot; ${j.status||"applied"}${j.notes?" &middot; "+j.notes:""}</div>${j.location||j.salary?`<div class="sub">${[j.location,j.salary].filter(Boolean).join(" &middot; ")}</div>`:""}${j.blurb?`<div class="blurb">${j.blurb}</div>`:""}${j.url?`<a class="joblink" href="${j.url}" target="_blank" rel="noopener">View posting &rarr;</a>`:""}</div>`).join("")
+  document.getElementById("jobs").innerHTML = jobs.length ? '<div class="job-grid">' + jobs.slice().sort((a,b)=>(b.date_applied||"").localeCompare(a.date_applied||"")).map(j=>
+    `<div class="job-card"><b>${j.company||"?"}</b>${j.role?" &mdash; "+j.role:""}<div class="sub">${j.date_applied?new Date(j.date_applied+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"}):"date?"} &middot; ${j.status||"applied"}</div>${j.location?`<div class="sub">${j.location}</div>`:""}${j.salary?`<div class="sub">${j.salary}</div>`:""}${j.blurb?`<div class="blurb">${j.blurb}</div>`:""}${j.notes?`<div class="sub">${j.notes}</div>`:""}${j.url?`<a class="joblink" href="${j.url}" target="_blank" rel="noopener">${j.url_label||"View posting &rarr;"}</a>`:""}</div>`).join("") + '</div>'
     : '<p class="empty">No applications logged yet.</p>';
   personList("appointments", v.appointments, a=>`<div class="item"><b>${a.title||a.provider||"?"}</b>${a.date?` <span class="sub">${new Date(a.date+"T12:00:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}</span>`:""}${a.notes?`<div class="sub">${a.notes}</div>`:""}</div>`);
   personList("medications", v.medications, m=>`<div class="item"><b>${m.name}</b> <span class="sub">${[m.dose,m.schedule].filter(Boolean).join(" &middot; ")}</span>${m.notes?`<div class="sub">${m.notes}</div>`:""}</div>`);
@@ -167,19 +167,20 @@ function renderSchedule(userChanged){
   const items = ((VAULT && VAULT.calendar) || [])
     .filter(c => c.date)
     .map(c => Object.assign({}, c, {d: new Date(c.date + "T12:00:00")}))
-    .filter(c => c.d >= today && c.d <= end)
-    .sort((x,y) => x.d - y.d);
-  if(!items.length){ el.innerHTML = '<p class="empty">Nothing on the schedule.</p>'; return; }
-  const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate() + 1);
-  el.innerHTML = items.map(c => {
-    const t = c.d.toDateString() === today.toDateString() ? "Today"
-      : c.d.toDateString() === tomorrow.toDateString() ? "Tomorrow"
-      : c.d.toLocaleDateString("en-US", {weekday:"short", month:"short", day:"numeric"});
-    return '<div class="item"><b>' + c.title + '</b> <span class="sub">' + t
-      + (c.time ? " \u00B7 " + c.time : "")
-      + (c.notes ? " \u00B7 " + c.notes : "") + '</span></div>';
-  }).join("");
+    .filter(c => c.d >= today && c.d <= end);
+  const byDay = {};
+  items.forEach(c => { const k = c.d.toDateString(); (byDay[k] = byDay[k] || []).push(c); });
+  let cells = "";
+  for(let i = 0; i < days; i++){
+    const d = new Date(today); d.setDate(d.getDate() + i);
+    const evs = byDay[d.toDateString()] || [];
+    cells += '<div class="day-cell' + (i === 0 ? " today" : "") + '"><div class="day-num">' + (d.getMonth()+1) + "/" + d.getDate() + '</div>'
+      + evs.map(c => '<div class="day-ev" title="' + c.title + '">' + c.title + (c.time ? " \u00B7 " + c.time : "") + '</div>').join("")
+      + '</div>';
+  }
+  el.innerHTML = '<div class="cal-grid">' + cells + '</div>';
 }
+
 
 function render(){
   greeting(); horoscope(); renderVault();
