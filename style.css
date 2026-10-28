@@ -32,7 +32,7 @@ h3{font-size:.85rem;margin:14px 0 6px;color:var(--muted);text-transform:uppercas
 textarea{width:100%;min-height:180px;background:#0e1018;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px;font-family:ui-monospace,monospace;font-size:.82rem;margin-bottom:10px}
 @media(max-width:700px){.span2{grid-column:span 1}}
 
-.horoscope{font-size:.92rem;line-height:1.65;color:var(--muted)}
+.horoscope{font-size:8pt;line-height:1.6;color:var(--muted)}
 select{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;margin-bottom:10px}
 
 .banner-wrap{max-width:960px;margin:16px auto 0;padding:0 16px}
@@ -54,3 +54,15 @@ select{background:var(--card);color:var(--text);border:1px solid var(--line);bor
 .job-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
 .job-card{background:#0e1018;border:1px solid var(--line);border-radius:10px;padding:12px}
 @media(max-width:700px){.cal-grid{grid-template-columns:repeat(3,1fr)}}
+
+.banner-wrap.wide{max-width:1200px}
+.cal-week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:4px}
+.cal-week span{text-align:center;font-size:.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:.05em}
+.day-cell.off{opacity:.4}
+.table-wrap{overflow-x:auto}
+.job-table{width:100%;border-collapse:collapse;font-size:.82rem}
+.job-table th{background:#0e1018;color:var(--muted);text-align:left;padding:8px;border:1px solid var(--line);font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
+.job-table td{padding:8px;border:1px solid var(--line);vertical-align:top}
+.job-table tbody tr:nth-child(even){background:rgba(255,255,255,.02)}
+.job-table td.about{color:var(--muted);font-size:.8rem}
+.job-table td.notes{color:var(--muted);font-size:.8rem;max-width:220px}

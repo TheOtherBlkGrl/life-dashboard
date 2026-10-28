@@ -76,8 +76,9 @@ function renderVault(){
   const thisWeek = jobs.filter(j=>j.date_applied && new Date(j.date_applied) >= weekAgo).length;
   const interviews = jobs.filter(j=>["interview scheduled","phone screen scheduled","offer"].includes((j.status||"").toLowerCase())).length;
   document.getElementById("job-stats").innerHTML = `<div class="stat"><b>${jobs.length}</b><span>total applications</span></div><div class="stat"><b>${thisWeek}</b><span>past 7 days</span></div><div class="stat"><b>${interviews}</b><span>in interview stage</span></div>`;
-  document.getElementById("jobs").innerHTML = jobs.length ? '<div class="job-grid">' + jobs.slice().sort((a,b)=>(b.date_applied||"").localeCompare(a.date_applied||"")).map(j=>
-    `<div class="job-card"><b>${j.company||"?"}</b>${j.role?" &mdash; "+j.role:""}<div class="sub">${j.date_applied?new Date(j.date_applied+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"}):"date?"} &middot; ${j.status||"applied"}</div>${j.location?`<div class="sub">${j.location}</div>`:""}${j.salary?`<div class="sub">${j.salary}</div>`:""}${j.blurb?`<div class="blurb">${j.blurb}</div>`:""}${j.notes?`<div class="sub">${j.notes}</div>`:""}${j.url?`<a class="joblink" href="${j.url}" target="_blank" rel="noopener">${j.url_label||"View posting &rarr;"}</a>`:""}</div>`).join("") + '</div>'
+  const fmtDate = d => d ? new Date(d+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"}) : "";
+  document.getElementById("jobs").innerHTML = jobs.length ? '<div class="table-wrap"><table class="job-table"><thead><tr><th>Company</th><th>Role</th><th>Applied</th><th>Status</th><th>Location</th><th>Salary</th><th>About</th><th>Link</th><th>Notes</th></tr></thead><tbody>' + jobs.slice().sort((a,b)=>(b.date_applied||"").localeCompare(a.date_applied||"")).map(j=>
+    `<tr><td><b>${j.company||"?"}</b></td><td>${j.role||""}</td><td>${fmtDate(j.date_applied)}</td><td>${j.status||"applied"}</td><td>${j.location||""}</td><td>${j.salary||""}</td><td class="about">${j.blurb||""}</td><td>${j.url?`<a class="joblink" href="${j.url}" target="_blank" rel="noopener">${j.url_label||"View posting &rarr;"}</a>`:""}</td><td class="notes">${j.notes||""}</td></tr>`).join("") + '</tbody></table></div>'
     : '<p class="empty">No applications logged yet.</p>';
   personList("appointments", v.appointments, a=>`<div class="item"><b>${a.title||a.provider||"?"}</b>${a.date?` <span class="sub">${new Date(a.date+"T12:00:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}</span>`:""}${a.notes?`<div class="sub">${a.notes}</div>`:""}</div>`);
   personList("medications", v.medications, m=>`<div class="item"><b>${m.name}</b> <span class="sub">${[m.dose,m.schedule].filter(Boolean).join(" &middot; ")}</span>${m.notes?`<div class="sub">${m.notes}</div>`:""}</div>`);
@@ -163,23 +164,27 @@ function renderSchedule(userChanged){
   const days = parseInt(sel.value, 10) || 14;
   const el = document.getElementById("schedule");
   const today = new Date(); today.setHours(0,0,0,0);
-  const end = new Date(today); end.setDate(end.getDate() + days);
+  const lastDay = new Date(today); lastDay.setDate(lastDay.getDate() + days - 1);
+  const start = new Date(today); start.setDate(start.getDate() - start.getDay()); // back to Sunday
+  const endD = new Date(lastDay); endD.setDate(endD.getDate() + (6 - endD.getDay())); // forward to Saturday
   const items = ((VAULT && VAULT.calendar) || [])
     .filter(c => c.date)
-    .map(c => Object.assign({}, c, {d: new Date(c.date + "T12:00:00")}))
-    .filter(c => c.d >= today && c.d <= end);
+    .map(c => Object.assign({}, c, {d: new Date(c.date + "T12:00:00")}));
   const byDay = {};
   items.forEach(c => { const k = c.d.toDateString(); (byDay[k] = byDay[k] || []).push(c); });
+  const total = Math.round((endD - start)/864e5) + 1;
   let cells = "";
-  for(let i = 0; i < days; i++){
-    const d = new Date(today); d.setDate(d.getDate() + i);
+  for(let i = 0; i < total; i++){
+    const d = new Date(start); d.setDate(d.getDate() + i);
+    const inRange = d >= today && d <= lastDay;
     const evs = byDay[d.toDateString()] || [];
-    cells += '<div class="day-cell' + (i === 0 ? " today" : "") + '"><div class="day-num">' + (d.getMonth()+1) + "/" + d.getDate() + '</div>'
+    cells += '<div class="day-cell' + (inRange ? "" : " off") + (d.toDateString() === today.toDateString() ? " today" : "") + '"><div class="day-num">' + (d.getMonth()+1) + "/" + d.getDate() + '</div>'
       + evs.map(c => '<div class="day-ev" title="' + c.title + '">' + c.title + (c.time ? " \u00B7 " + c.time : "") + '</div>').join("")
       + '</div>';
   }
-  el.innerHTML = '<div class="cal-grid">' + cells + '</div>';
+  el.innerHTML = '<div class="cal-week"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div><div class="cal-grid">' + cells + '</div>';
 }
+
 
 
 function render(){
