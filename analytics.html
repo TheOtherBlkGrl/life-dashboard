@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Analytics - Clarissa's Dashboard</title>
+<link rel="stylesheet" href="style.css?v=14">
+<script src="js/astronomy.browser.min.js"></script>
+</head>
+<body data-page="home">
+<div id="lock" class="lock-screen">
+  <div class="lock-card">
+    <h1>Clarissa's Dashboard</h1>
+    <p class="lock-sub">Enter your 6-digit PIN</p>
+    <input id="pin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" placeholder="&bull;&bull;&bull;&bull;&bull;&bull;">
+    <button id="unlock-btn" onclick="unlock()">Unlock</button>
+    <p id="lock-error" class="lock-error"></p>
+  </div>
+</div>
+<main id="app" class="hidden">
+  <nav class="nav">
+    <a href="index.html">Home</a><a href="jobs.html">Jobs</a><a href="journal.html">Journal</a><a href="analytics.html" class="active">Analytics</a><a href="calendar.html">Calendar</a>
+  </nav>
+
+  <div class="banner-wrap wide">
+    <article class="card">
+      <h2>Site traffic &middot; clarissadward.com</h2>
+      <div id="analytics"></div>
+    </article>
+  </div>
+  <div class="banner-wrap wide">
+    <article class="card">
+      <h2>Portfolio site</h2>
+      <p class="hint">Your public resume site, where all of this traffic is headed:</p>
+      <p class="gcal-link"><a class="joblink" href="https://www.clarissadward.com" target="_blank" rel="noopener">clarissadward.com &rarr;</a></p>
+    </article>
+  </div>
+</main>
+<script src="data/public.js"></script>
+<script src="app.js?v=14"></script>
+</body>
+</html>

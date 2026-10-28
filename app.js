@@ -237,11 +237,32 @@ function renderSchedule(userChanged){
 
 
 function render(){
-  greeting(); horoscope(); renderVault();
+  greeting(); horoscope(); renderVault(); renderAnalytics();
   const jc = document.getElementById("home-jobs");
   if(jc && VAULT) jc.textContent = ((VAULT.job_applications||[]).length);
   const ec = document.getElementById("home-emails");
   if(ec && VAULT) ec.textContent = ((VAULT.important_emails||[]).length);
+}
+
+function renderAnalytics(){
+  const el = document.getElementById("analytics");
+  if(!el || !VAULT) return;
+  const d = VAULT.site_analytics;
+  if(!d){ el.innerHTML = '<p class="empty">No analytics snapshot synced yet.</p>'; return; }
+  const max = Math.max(1, ...(d.top||[]).map(x=>x.views));
+  const bars = (d.top||[]).map(x=>'<div class="hbar"><span class="hbar-lab">'+x.label+'</span><div class="hbar-track"><div class="hbar-fill" style="width:'+Math.max(3,Math.round(x.views/max*100))+'%"></div></div><span class="hbar-val">'+x.views+'</span></div>').join("");
+  const extra = (d.extras||[]).map(e=>'<div class="stat"><b>'+e.value+'</b><span>'+e.label+'</span></div>').join("");
+  el.innerHTML =
+    '<div class="stat-row">' +
+      '<div class="stat"><b>'+d.views_7d+'</b><span>views &middot; last 7 days</span></div>' +
+      '<div class="stat"><b>'+d.visitors_7d+'</b><span>visits &middot; last 7 days</span></div>' +
+      '<div class="stat"><b>'+d.resume_opens+'</b><span>resume opens</span></div>' +
+      '<div class="stat"><b>'+d.pdf_clicks+'</b><span>Save-as-PDF clicks</span></div>' +
+    '</div>' +
+    '<div class="achart hcols">'+bars+'</div>' +
+    '<p class="hint">Top pages over the last 7 days, synced '+d.synced+'. Bots excluded.</p>' +
+    (d.note ? '<p class="hint">'+d.note+'</p>' : '') +
+    '<div class="stat-row" style="margin-top:12px">'+extra+'</div>';
 }
 
 (function boot(){
