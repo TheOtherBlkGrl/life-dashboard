@@ -81,7 +81,6 @@ function renderVault(){
     `<tr><td><b>${j.company||"?"}</b></td><td>${j.role||""}</td><td>${fmtDate(j.date_applied)}</td><td>${j.status||"applied"}</td><td>${j.location||""}</td><td>${j.salary||""}</td><td class="about">${j.blurb||""}</td><td>${j.url?`<a class="joblink" href="${j.url}" target="_blank" rel="noopener">${j.url_label||"View posting &rarr;"}</a>`:""}</td><td class="notes">${j.notes||""}</td></tr>`).join("") + '</tbody></table></div>'
     : '<p class="empty">No applications logged yet.</p>';
   personList("appointments", v.appointments, a=>`<div class="item"><b>${a.title||a.provider||"?"}</b>${a.date?` <span class="sub">${new Date(a.date+"T12:00:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}</span>`:""}${a.notes?`<div class="sub">${a.notes}</div>`:""}</div>`);
-  personList("medications", v.medications, m=>`<div class="item"><b>${m.name}</b> <span class="sub">${[m.dose,m.schedule].filter(Boolean).join(" &middot; ")}</span>${m.notes?`<div class="sub">${m.notes}</div>`:""}</div>`);
   personList("bills", v.bills, b=>`<div class="item"><b>${b.name}</b> <span class="sub">$${b.amount}${b.due?" &middot; due "+new Date(b.due+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"}):""}${b.recurring?" &middot; "+b.recurring:""}</span></div>`);
   personList("emails", v.important_emails, e=>`<div class="item"><b>${e.subject||"?"}</b> <span class="sub">${e.from||""}${e.date?" &middot; "+e.date:""}${e.why?" &middot; "+e.why:""}</span></div>`);
   renderSchedule();
