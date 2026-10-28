@@ -28,9 +28,14 @@ async function unlock(){
     err.textContent = "";
     document.getElementById("lock").classList.add("hidden");
     document.getElementById("app").classList.remove("hidden");
+  }catch(e){
+    err.textContent = "That PIN doesn't match. Check the two leading zeros.";
+    return;
+  }
+  try{
     render();
   }catch(e){
-    err.textContent = "Wrong PIN, or the vault is unreadable.";
+    console.error("render error:", e);
   }
 }
 
@@ -59,10 +64,10 @@ function renderNatal(){
     `<span class="chip"><b>Sun</b> ${sign(n.sun.lon)} ${degInSign(n.sun.lon)}&deg;</span>`,
     `<span class="chip"><b>Moon</b> ${sign(n.moon.lon)} ${degInSign(n.moon.lon)}&deg;</span>`,
     `<span class="chip"><b>Rising</b> ${sign(n.ascendant.lon)} ${degInSign(n.ascendant.lon)}&deg;</span>`,
-    `<span class="chip"><b>Mercury</b> ${sign(n.mercury.lon)}&deg;</span>`,
-    `<span class="chip"><b>Venus</b> ${sign(n.venus.lon)}&deg;</span>`,
-    `<span class="chip"><b>Mars</b> ${sign(n.mars.lon)}&deg;</span>`,
-    `<span class="chip"><b>MC</b> ${sign(n.midheaven.lon)}&deg;</span>`
+    `<span class="chip"><b>Mercury</b> ${sign(n.mercury.lon)} ${degInSign(n.mercury.lon)}&deg;</span>`,
+    `<span class="chip"><b>Venus</b> ${sign(n.venus.lon)} ${degInSign(n.venus.lon)}&deg;</span>`,
+    `<span class="chip"><b>Mars</b> ${sign(n.mars.lon)} ${degInSign(n.mars.lon)}&deg;</span>`,
+    `<span class="chip"><b>MC</b> ${sign(n.midheaven.lon)} ${degInSign(n.midheaven.lon)}&deg;</span>`
   ].join("");
 }
 
@@ -70,6 +75,11 @@ const ASPECTS = [[0,"conjunction"],[60,"sextile"],[90,"square"],[120,"trine"],[1
 
 function transits(){
   const A = window.Astronomy;
+  if(!A){
+    document.getElementById("transits").innerHTML = '<p class="empty">Transits unavailable right now.</p>';
+    document.getElementById("aspects").innerHTML = "";
+    return;
+  }
   const now = new Date();
   const bodies = [["Sun",A.Body.Sun],["Moon",A.Body.Moon],["Mercury",A.Body.Mercury],["Venus",A.Body.Venus],["Mars",A.Body.Mars]];
   const tPos = {};
