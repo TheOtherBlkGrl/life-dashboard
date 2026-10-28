@@ -26,12 +26,26 @@
     </div>
     <button class="ghost" onclick="lockSite()">Lock</button>
   </header>
-  <section class="grid">
-    <article class="card span2">
+  <div class="banner-wrap">
+    <article class="card banner">
       <h2>Horoscope</h2>
       <p id="horoscope" class="horoscope"></p>
     </article>
-    <article class="card">
+    <article class="card banner">
+      <div class="banner-head">
+        <h2>Schedule</h2>
+        <select id="schedule-range" onchange="renderSchedule(true)">
+          <option value="3">Next 3 days</option>
+          <option value="7">Next week</option>
+          <option value="14" selected>Next 2 weeks</option>
+          <option value="30">Next month</option>
+        </select>
+      </div>
+      <div id="schedule"></div>
+    </article>
+  </div>
+  <section class="grid">
+    <article class="card span2">
       <h2>Job Applications</h2>
       <div id="job-stats" class="stat-row"></div>
       <div id="jobs"></div>
@@ -51,16 +65,6 @@
     <article class="card">
       <h2>Important Emails</h2>
       <div id="emails"></div>
-    </article>
-    <article class="card">
-      <h2>Schedule</h2>
-      <select id="schedule-range" onchange="renderSchedule(true)">
-        <option value="3">Next 3 days</option>
-        <option value="7">Next week</option>
-        <option value="14" selected>Next 2 weeks</option>
-        <option value="30">Next month</option>
-      </select>
-      <div id="schedule"></div>
     </article>
     <article class="card">
       <h2>Journal</h2>

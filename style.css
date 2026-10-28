@@ -34,3 +34,11 @@ textarea{width:100%;min-height:180px;background:#0e1018;color:var(--text);border
 
 .horoscope{font-size:1.05rem;line-height:1.75}
 select{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;margin-bottom:10px}
+
+.banner-wrap{max-width:960px;margin:16px auto 0;padding:0 16px}
+.banner{margin-bottom:14px}
+.banner-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.banner-head select{margin-bottom:0}
+.blurb{color:var(--muted);font-size:.85rem;margin-top:4px}
+.joblink{color:var(--gold);font-size:.84rem;text-decoration:none}
+.joblink:hover{text-decoration:underline}
