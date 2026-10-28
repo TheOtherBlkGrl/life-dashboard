@@ -9,10 +9,10 @@
 button{background:var(--gold);border:none;border-radius:8px;padding:10px 18px;font-weight:600;cursor:pointer;color:#1a1d29}
 .ghost{background:transparent;border:1px solid var(--line);color:var(--muted)}
 .lock-error{color:#e07a7a;font-size:.85rem;min-height:1.2em}
-.top{display:flex;justify-content:space-between;align-items:center;max-width:960px;margin:24px auto 0;padding:0 16px}
+.top{display:flex;justify-content:space-between;align-items:center;max-width:none;margin:24px auto 0;padding:0 24px}
 .top h1{font-size:1.4rem;margin:0}
 .date-line{color:var(--muted);margin:2px 0 0;font-size:.9rem}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;max-width:960px;margin:20px auto 40px;padding:0 16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;max-width:none;margin:20px auto 40px;padding:0 24px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
 .span2{grid-column:span 2}
 h2{font-size:1rem;margin:0 0 10px;color:var(--gold);letter-spacing:.02em;text-transform:uppercase}
@@ -35,7 +35,7 @@ textarea{width:100%;min-height:180px;background:#0e1018;color:var(--text);border
 .horoscope{font-size:8pt;line-height:1.6;color:var(--muted)}
 select{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;margin-bottom:10px}
 
-.banner-wrap{max-width:960px;margin:16px auto 0;padding:0 16px}
+.banner-wrap{max-width:none;margin:16px auto 0;padding:0 24px}
 .banner{margin-bottom:14px}
 .banner-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .banner-head select{margin-bottom:0}
@@ -55,7 +55,6 @@ select{background:var(--card);color:var(--text);border:1px solid var(--line);bor
 .job-card{background:#0e1018;border:1px solid var(--line);border-radius:10px;padding:12px}
 @media(max-width:700px){.cal-grid{grid-template-columns:repeat(3,1fr)}}
 
-.banner-wrap.wide{max-width:1200px}
 .cal-week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:4px}
 .cal-week span{text-align:center;font-size:.72rem;color:var(--gold);text-transform:uppercase;letter-spacing:.05em}
 .day-cell.off{opacity:.4}
@@ -66,3 +65,10 @@ select{background:var(--card);color:var(--text);border:1px solid var(--line);bor
 .job-table tbody tr:nth-child(even){background:rgba(255,255,255,.02)}
 .job-table td.about{color:var(--muted);font-size:.8rem}
 .job-table td.notes{color:var(--muted);font-size:.8rem;max-width:220px}
+
+.sched-month{color:var(--muted);font-size:.8rem;text-transform:none;letter-spacing:0;font-weight:400}
+.schedule-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:14px}
+.schedule-cols h3{margin-top:0}
+.journal-top{margin-top:10px}
+.journal-top .item{padding:6px 0;border-bottom:1px solid var(--line);font-size:.85rem}
+.journal-top .item:last-child{border-bottom:none}

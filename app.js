@@ -85,7 +85,8 @@ function renderVault(){
   personList("bills", v.bills, b=>`<div class="item"><b>${b.name}</b> <span class="sub">$${b.amount}${b.due?" &middot; due "+new Date(b.due+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"}):""}${b.recurring?" &middot; "+b.recurring:""}</span></div>`);
   personList("emails", v.important_emails, e=>`<div class="item"><b>${e.subject||"?"}</b> <span class="sub">${e.from||""}${e.date?" &middot; "+e.date:""}${e.why?" &middot; "+e.why:""}</span></div>`);
   renderSchedule();
-  personList("journal", v.journal_entries, j=>`<div class="item">${j.text?`${j.text}<div class="sub">${j.date||""}</div>`:""}</div>`);
+  const jent = v.journal_entries||[];
+  document.getElementById("journal").innerHTML = jent.length ? jent.map(j=>`<div class="item">${j.text?`${j.text}<div class="sub">${j.date||""}</div>`:""}</div>`).join("") : "";
   const doy = Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/864e5);
   document.getElementById("prompt").textContent = window.JOURNAL_PROMPTS[doy % window.JOURNAL_PROMPTS.length];
   document.getElementById("vault-editor").value = JSON.stringify(VAULT, null, 2);
@@ -167,23 +168,27 @@ function renderSchedule(userChanged){
   const lastDay = new Date(today); lastDay.setDate(lastDay.getDate() + days - 1);
   const start = new Date(today); start.setDate(start.getDate() - start.getDay()); // back to Sunday
   const endD = new Date(lastDay); endD.setDate(endD.getDate() + (6 - endD.getDay())); // forward to Saturday
+  const mL = document.getElementById("sched-month");
+  if(mL){ mL.textContent = start.toLocaleDateString("en-US",{month:"long", day:"numeric"}) + " to " + endD.toLocaleDateString("en-US",{month:"long", day:"numeric", year:"numeric"}); }
   const items = ((VAULT && VAULT.calendar) || [])
     .filter(c => c.date)
     .map(c => Object.assign({}, c, {d: new Date(c.date + "T12:00:00")}));
   const byDay = {};
   items.forEach(c => { const k = c.d.toDateString(); (byDay[k] = byDay[k] || []).push(c); });
+  const MO = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   const total = Math.round((endD - start)/864e5) + 1;
   let cells = "";
   for(let i = 0; i < total; i++){
     const d = new Date(start); d.setDate(d.getDate() + i);
     const inRange = d >= today && d <= lastDay;
     const evs = byDay[d.toDateString()] || [];
-    cells += '<div class="day-cell' + (inRange ? "" : " off") + (d.toDateString() === today.toDateString() ? " today" : "") + '"><div class="day-num">' + (d.getMonth()+1) + "/" + d.getDate() + '</div>'
+    cells += '<div class="day-cell' + (inRange ? "" : " off") + (d.toDateString() === today.toDateString() ? " today" : "") + '"><div class="day-num">' + MO[d.getMonth()] + " " + d.getDate() + '</div>'
       + evs.map(c => '<div class="day-ev" title="' + c.title + '">' + c.title + (c.time ? " \u00B7 " + c.time : "") + '</div>').join("")
       + '</div>';
   }
   el.innerHTML = '<div class="cal-week"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div><div class="cal-grid">' + cells + '</div>';
 }
+
 
 
 

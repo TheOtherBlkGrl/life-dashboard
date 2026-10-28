@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Clarissa's Dashboard</title>
-<link rel="stylesheet" href="style.css?v=6">
+<link rel="stylesheet" href="style.css?v=7">
 <script src="js/astronomy.browser.min.js"></script>
 </head>
 <body>
@@ -31,12 +31,13 @@
       <h2>Horoscope</h2>
       <p id="horoscope" class="horoscope"></p>
       <p class="prompt-line"><span class="plabel">Journal prompt</span><span id="prompt"></span></p>
+      <div id="journal" class="journal-top"></div>
     </article>
   </div>
   <div class="banner-wrap">
     <article class="card banner">
       <div class="banner-head">
-        <h2>Schedule</h2>
+        <h2>Schedule <span id="sched-month" class="sched-month"></span></h2>
         <select id="schedule-range" onchange="renderSchedule(true)">
           <option value="3">Next 3 days</option>
           <option value="7">Next week</option>
@@ -45,6 +46,16 @@
         </select>
       </div>
       <div id="schedule"></div>
+      <div class="schedule-cols">
+        <div>
+          <h3>Appointments</h3>
+          <div id="appointments"></div>
+        </div>
+        <div>
+          <h3>Upcoming Bills</h3>
+          <div id="bills"></div>
+        </div>
+      </div>
     </article>
   </div>
   <section class="grid">
@@ -54,24 +65,12 @@
       <div id="jobs"></div>
     </article>
     <article class="card">
-      <h2>Appointments</h2>
-      <div id="appointments"></div>
-    </article>
-    <article class="card">
       <h2>Medications</h2>
       <div id="medications"></div>
     </article>
     <article class="card">
-      <h2>Upcoming Bills</h2>
-      <div id="bills"></div>
-    </article>
-    <article class="card">
       <h2>Important Emails</h2>
       <div id="emails"></div>
-    </article>
-    <article class="card">
-      <h2>Journal</h2>
-      <div id="journal"></div>
     </article>
     <article class="card span2">
       <details>
@@ -84,6 +83,6 @@
   </section>
 </main>
 <script src="data/public.js"></script>
-<script src="app.js?v=6"></script>
+<script src="app.js?v=7"></script>
 </body>
 </html>
