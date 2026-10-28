@@ -72,3 +72,5 @@ select{background:var(--card);color:var(--text);border:1px solid var(--line);bor
 .journal-top{margin-top:10px}
 .journal-top .item{padding:6px 0;border-bottom:1px solid var(--line);font-size:.85rem}
 .journal-top .item:last-child{border-bottom:none}
+
+.day-ev.src-g{border-left-color:#7c9cf5}

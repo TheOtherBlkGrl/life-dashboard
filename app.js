@@ -169,9 +169,16 @@ function renderSchedule(userChanged){
   const endD = new Date(lastDay); endD.setDate(endD.getDate() + (6 - endD.getDay())); // forward to Saturday
   const mL = document.getElementById("sched-month");
   if(mL){ mL.textContent = start.toLocaleDateString("en-US",{month:"long", day:"numeric"}) + " to " + endD.toLocaleDateString("en-US",{month:"long", day:"numeric", year:"numeric"}); }
-  const items = ((VAULT && VAULT.calendar) || [])
-    .filter(c => c.date)
-    .map(c => Object.assign({}, c, {d: new Date(c.date + "T12:00:00")}));
+  const toks = s => (s||"").toLowerCase().replace(/[^a-z ]/g," ").split(/\s+/).filter(w=>w.length>2);
+  let pinned = ((VAULT && VAULT.calendar) || []).filter(c => c.date).map(c => Object.assign({}, c, {d: new Date(c.date + "T12:00:00")}));
+  const gcal = ((VAULT && VAULT.gcal) || []).filter(c => c.date).map(c => Object.assign({}, c, {d: new Date(c.date + "T12:00:00"), g:1}));
+  const items = [];
+  for(const g of gcal){
+    const gt = toks(g.title);
+    pinned = pinned.filter(p => !(p.d.toDateString() === g.d.toDateString() && toks(p.title).every(t => gt.includes(t))));
+    items.push(g);
+  }
+  items.push(...pinned);
   const byDay = {};
   items.forEach(c => { const k = c.d.toDateString(); (byDay[k] = byDay[k] || []).push(c); });
   const MO = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -182,11 +189,12 @@ function renderSchedule(userChanged){
     const inRange = d >= today && d <= lastDay;
     const evs = byDay[d.toDateString()] || [];
     cells += '<div class="day-cell' + (inRange ? "" : " off") + (d.toDateString() === today.toDateString() ? " today" : "") + '"><div class="day-num">' + MO[d.getMonth()] + " " + d.getDate() + '</div>'
-      + evs.map(c => '<div class="day-ev" title="' + c.title + '">' + c.title + (c.time ? " \u00B7 " + c.time : "") + '</div>').join("")
+      + evs.map(c => '<div class="day-ev' + (c.g ? " src-g" : "") + '" title="' + c.title + '">' + c.title + (c.time ? " \u00B7 " + c.time : "") + '</div>').join("")
       + '</div>';
   }
   el.innerHTML = '<div class="cal-week"><span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span></div><div class="cal-grid">' + cells + '</div>';
 }
+
 
 
 
