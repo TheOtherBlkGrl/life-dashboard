@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Clarissa's Dashboard</title>
-<link rel="stylesheet" href="style.css?v=14">
+<link rel="stylesheet" href="style.css?v=15">
 <script src="js/astronomy.browser.min.js"></script>
 </head>
 <body data-page="home">
@@ -26,15 +26,21 @@
     </div>
     <button class="ghost" onclick="lockSite()">Lock</button>
   </header>
-  <nav class="nav">
-    <a href="index.html" class="active">Home</a><a href="jobs.html">Jobs</a><a href="journal.html">Journal</a><a href="analytics.html">Analytics</a><a href="calendar.html">Calendar</a>
+  <nav class="menu-wrap">
+    <button id="menu-btn" class="hamburger" aria-label="Menu" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+    <div id="menu" class="menu">
+      <a href="index.html">Home</a>
+      <a href="jobs.html">Jobs</a>
+      <a href="journal.html">Journal</a>
+      <a href="analytics.html">Analytics</a>
+      <a href="calendar.html">Calendar</a>
+    </div>
   </nav>
 
   <div class="banner-wrap wide">
     <article class="card banner">
-      <h2>Horoscope</h2>
-      <p id="horoscope" class="horoscope"></p>
-      <p class="prompt-line"><span class="plabel">Journal prompt</span><span id="prompt"></span></p>
+      <h2>Journal prompt</h2>
+      <p id="prompt" class="prompt-line" style="border-top:none;margin-top:0"></p>
     </article>
   </div>
   <section class="grid">
@@ -63,6 +69,6 @@
   </section>
 </main>
 <script src="data/public.js"></script>
-<script src="app.js?v=14"></script>
+<script src="app.js?v=15"></script>
 </body>
 </html>

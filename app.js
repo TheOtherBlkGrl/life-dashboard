@@ -54,6 +54,16 @@ document.getElementById("pin").addEventListener("keydown", e=>{ if(e.key==="Ente
 function sign(lon){ return window.SIGNS[Math.floor(((lon%360)+360)%360/30)]; }
 function degInSign(lon){ return (((lon%360)+360)%360 % 30).toFixed(1); }
 
+function toggleMenu(){
+  const m = document.getElementById("menu");
+  if(m) m.classList.toggle("open");
+}
+(function markActive(){
+  const page = location.pathname.split("/").pop() || "index.html";
+  const m = document.getElementById("menu");
+  if(!m) return;
+  m.querySelectorAll("a").forEach(a => { if(a.getAttribute("href") === page) a.classList.add("active"); });
+})();
 function greeting(){
   const h = new Date().getHours();
   const g = h<12 ? "Good morning" : h<18 ? "Good afternoon" : "Good evening";
@@ -141,6 +151,7 @@ async function downloadVault(){
 
 function horoscope(){
   const el = document.getElementById("horoscope");
+  if(!el) return;
   if(!el) return;
   const A = window.Astronomy;
   if(!A){ el.textContent = "Horoscope unavailable right now."; return; }
