@@ -28,12 +28,8 @@
   </header>
   <section class="grid">
     <article class="card span2">
-      <h2>Astrology</h2>
-      <div id="natal" class="natal-row"></div>
-      <h3>Today's sky</h3>
-      <div id="transits"></div>
-      <h3>Aspects to your chart</h3>
-      <div id="aspects"></div>
+      <h2>Horoscope</h2>
+      <p id="horoscope" class="horoscope"></p>
     </article>
     <article class="card">
       <h2>Job Applications</h2>
@@ -57,8 +53,14 @@
       <div id="emails"></div>
     </article>
     <article class="card">
-      <h2>Calendar</h2>
-      <div id="calendar"></div>
+      <h2>Schedule</h2>
+      <select id="schedule-range" onchange="renderSchedule(true)">
+        <option value="3">Next 3 days</option>
+        <option value="7">Next week</option>
+        <option value="14" selected>Next 2 weeks</option>
+        <option value="30">Next month</option>
+      </select>
+      <div id="schedule"></div>
     </article>
     <article class="card">
       <h2>Journal</h2>

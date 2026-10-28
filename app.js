@@ -58,56 +58,9 @@ function greeting(){
   document.getElementById("today").textContent = new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"});
 }
 
-function renderNatal(){
-  const n = window.NATAL;
-  document.getElementById("natal").innerHTML = [
-    `<span class="chip"><b>Sun</b> ${sign(n.sun.lon)} ${degInSign(n.sun.lon)}&deg;</span>`,
-    `<span class="chip"><b>Moon</b> ${sign(n.moon.lon)} ${degInSign(n.moon.lon)}&deg;</span>`,
-    `<span class="chip"><b>Rising</b> ${sign(n.ascendant.lon)} ${degInSign(n.ascendant.lon)}&deg;</span>`,
-    `<span class="chip"><b>Mercury</b> ${sign(n.mercury.lon)} ${degInSign(n.mercury.lon)}&deg;</span>`,
-    `<span class="chip"><b>Venus</b> ${sign(n.venus.lon)} ${degInSign(n.venus.lon)}&deg;</span>`,
-    `<span class="chip"><b>Mars</b> ${sign(n.mars.lon)} ${degInSign(n.mars.lon)}&deg;</span>`,
-    `<span class="chip"><b>MC</b> ${sign(n.midheaven.lon)} ${degInSign(n.midheaven.lon)}&deg;</span>`
-  ].join("");
-}
 
 const ASPECTS = [[0,"conjunction"],[60,"sextile"],[90,"square"],[120,"trine"],[180,"opposition"]];
 
-function transits(){
-  const A = window.Astronomy;
-  if(!A){
-    document.getElementById("transits").innerHTML = '<p class="empty">Transits unavailable right now.</p>';
-    document.getElementById("aspects").innerHTML = "";
-    return;
-  }
-  const now = new Date();
-  const bodies = [["Sun",A.Body.Sun],["Moon",A.Body.Moon],["Mercury",A.Body.Mercury],["Venus",A.Body.Venus],["Mars",A.Body.Mars]];
-  const tPos = {};
-  let tRows = `<div class="item"><span class="sub">${now.toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"})}</span></div>`;
-  bodies.forEach(([name,body])=>{
-    const ecl = A.Ecliptic(A.GeoVector(body, now, true));
-    const lon = ((ecl.elon%360)+360)%360;
-    tPos[name] = lon;
-    tRows += `<div class="item">${name} in <b>${sign(lon)}</b> ${degInSign(lon)}&deg;</div>`;
-  });
-  const phase = A.MoonPhase(now);
-  const phaseName = phase<45?"New-ish":phase<90?"Waxing crescent":phase<135?"First quarter-ish":phase<180?"Waxing gibbous":phase<225?"Full-ish":phase<270?"Waning gibbous":phase<315?"Last quarter-ish":"Waning crescent";
-  tRows += `<div class="item">Moon phase: <b>${phaseName}</b> (${phase.toFixed(0)}&deg; of cycle)</div>`;
-  document.getElementById("transits").innerHTML = tRows;
-  const n = window.NATAL;
-  let rows = "";
-  bodies.forEach(([name])=>{
-    Object.entries({Sun:n.sun, Moon:n.moon, Mercury:n.mercury, Venus:n.venus, Mars:n.mars, Rising:n.ascendant, MC:n.midheaven}).forEach(([nname,np])=>{
-      let d = Math.abs(tPos[name]-np.lon)%360; if(d>180) d=360-d;
-      ASPECTS.forEach(([ang,label])=>{
-        if(Math.abs(d-ang)<=4 && !(name==="Moon" && nname==="Moon")){
-          rows += `<div class="item">Transit ${name} ${label} natal ${nname} <span class="sub">(orb ${Math.abs(d-ang).toFixed(1)}&deg;)</span></div>`;
-        }
-      });
-    });
-  });
-  document.getElementById("aspects").innerHTML = rows || '<p class="empty">No close aspects to your chart today. Breathe.</p>';
-}
 
 function personList(elId, items, fmt){
   const el = document.getElementById(elId);
@@ -130,7 +83,7 @@ function renderVault(){
   personList("medications", v.medications, m=>`<div class="item"><b>${m.name}</b> <span class="sub">${[m.dose,m.schedule].filter(Boolean).join(" &middot; ")}</span>${m.notes?`<div class="sub">${m.notes}</div>`:""}</div>`);
   personList("bills", v.bills, b=>`<div class="item"><b>${b.name}</b> <span class="sub">$${b.amount}${b.due?" &middot; due "+new Date(b.due+"T12:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric"}):""}${b.recurring?" &middot; "+b.recurring:""}</span></div>`);
   personList("emails", v.important_emails, e=>`<div class="item"><b>${e.subject||"?"}</b> <span class="sub">${e.from||""}${e.date?" &middot; "+e.date:""}${e.why?" &middot; "+e.why:""}</span></div>`);
-  personList("calendar", v.calendar, c=>`<div class="item"><b>${c.title}</b> <span class="sub">${c.date?new Date(c.date+"T12:00:00").toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"}):""}${c.time?" "+c.time:""}${c.notes?" &middot; "+c.notes:""}</span></div>`);
+  renderSchedule();
   personList("journal", v.journal_entries, j=>`<div class="item">${j.text?`${j.text}<div class="sub">${j.date||""}</div>`:""}</div>`);
   const doy = Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/864e5);
   document.getElementById("prompt").textContent = window.JOURNAL_PROMPTS[doy % window.JOURNAL_PROMPTS.length];
@@ -149,6 +102,85 @@ async function downloadVault(){
   a.href = URL.createObjectURL(blob); a.download = "vault.enc"; a.click();
 }
 
+function horoscope(){
+  const el = document.getElementById("horoscope");
+  const A = window.Astronomy;
+  if(!A){ el.textContent = "Horoscope unavailable right now."; return; }
+  try{
+    const now = new Date();
+    const ecl = b => A.Ecliptic(A.GeoVector(b, now, true)).elon;
+    const t = {Sun:ecl(A.Body.Sun), Moon:ecl(A.Body.Moon), Mercury:ecl(A.Body.Mercury), Venus:ecl(A.Body.Venus), Mars:ecl(A.Body.Mars)};
+    const moonSign = SIGNS[Math.floor(t.Moon/30)%12];
+    const elem = {Aries:"fire",Leo:"fire",Sagittarius:"fire",Taurus:"earth",Virgo:"earth",Capricorn:"earth",Gemini:"air",Libra:"air",Aquarius:"air",Cancer:"water",Scorpio:"water",Pisces:"water"}[moonSign];
+    const elemLine = {fire:"a fire kind of day: momentum favors moving first", earth:"an earth kind of day: steady hands win", air:"an air kind of day: talk, ideas and errands move fast", water:"a water kind of day: lead with feel, back it with facts"}[elem];
+    const THEMES = {Sun:"your energy and confidence", Moon:"your mood", Mercury:"conversations and paperwork", Venus:"money and what you value", Mars:"your drive", Rising:"how you come across", Midheaven:"your career and reputation"};
+    const FLAVOR = {
+      conjunction:["blends with","a clean boost, lean into it"],
+      sextile:["teams up with","doors open if you say yes"],
+      trine:["flows with","it comes easy, use the momentum"],
+      square:["bumps against","friction that shows exactly where to slow down and double-check"],
+      opposition:["pulls against","a balancing act, choose what serves the week and not just the hour"]
+    };
+    const ANG = [[0,"conjunction"],[60,"sextile"],[90,"square"],[120,"trine"],[180,"opposition"]];
+    const hits = [];
+    for(const [tn,tlon] of Object.entries(t)){
+      for(const n of Object.values(NATAL)){
+        if(tn === n.label) continue;
+        let d = Math.abs(tlon - n.lon) % 360; if(d > 180) d = 360 - d;
+        for(const [ang, aname] of ANG){
+          const orb = Math.abs(d - ang);
+          if(orb <= 6) hits.push({tn, n, aname, orb});
+        }
+      }
+    }
+    hits.sort((x,y)=>x.orb-y.orb);
+    const parts = ["The Moon moves through " + moonSign + " today, making it " + elemLine + "."];
+    if(!hits.length){
+      parts.push("No strong transits touch your chart today, so the day is mostly yours to steer.");
+    } else {
+      for(const h of hits.slice(0,3)){
+        const [verb, flavor] = FLAVOR[h.aname];
+        parts.push(h.tn + " in " + SIGNS[Math.floor(t[h.tn]/30)%12] + " " + verb + " your " + h.n.label + " (" + h.orb.toFixed(1) + "\u00B0 orb), which colors " + THEMES[h.n.label] + ": " + flavor + ".");
+      }
+      if(hits.slice(0,3).some(h => h.aname === "square" || h.aname === "opposition")){
+        parts.push("Take the friction as information, not a stop sign.");
+      } else {
+        parts.push("Easy sky. Cash in on it.");
+      }
+    }
+    el.textContent = parts.join(" ");
+  }catch(e){
+    console.error("horoscope error:", e);
+    el.textContent = "Horoscope unavailable right now.";
+  }
+}
+
+function renderSchedule(userChanged){
+  const sel = document.getElementById("schedule-range");
+  if(!sel) return;
+  if(userChanged){ try{ localStorage.setItem("schedule_range", sel.value); }catch(e){} }
+  else { try{ const s = localStorage.getItem("schedule_range"); if(s) sel.value = s; }catch(e){} }
+  const days = parseInt(sel.value, 10) || 14;
+  const el = document.getElementById("schedule");
+  const today = new Date(); today.setHours(0,0,0,0);
+  const end = new Date(today); end.setDate(end.getDate() + days);
+  const items = ((VAULT && VAULT.calendar) || [])
+    .filter(c => c.date)
+    .map(c => Object.assign({}, c, {d: new Date(c.date + "T12:00:00")}))
+    .filter(c => c.d >= today && c.d <= end)
+    .sort((x,y) => x.d - y.d);
+  if(!items.length){ el.innerHTML = '<p class="empty">Nothing on the schedule.</p>'; return; }
+  const tomorrow = new Date(today); tomorrow.setDate(tomorrow.getDate() + 1);
+  el.innerHTML = items.map(c => {
+    const t = c.d.toDateString() === today.toDateString() ? "Today"
+      : c.d.toDateString() === tomorrow.toDateString() ? "Tomorrow"
+      : c.d.toLocaleDateString("en-US", {weekday:"short", month:"short", day:"numeric"});
+    return '<div class="item"><b>' + c.title + '</b> <span class="sub">' + t
+      + (c.time ? " \u00B7 " + c.time : "")
+      + (c.notes ? " \u00B7 " + c.notes : "") + '</span></div>';
+  }).join("");
+}
+
 function render(){
-  greeting(); renderNatal(); transits(); renderVault();
+  greeting(); horoscope(); renderVault();
 }
