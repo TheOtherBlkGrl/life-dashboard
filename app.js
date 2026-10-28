@@ -3,6 +3,7 @@ const dec = new TextDecoder();
 let VAULT = null;
 let CURRENT_KEY = null;
 let CURRENT_META = null;
+const PAGE = document.body.getAttribute("data-page")||"home";
 
 function b64ToBytes(b){const s=atob(b);const a=new Uint8Array(s.length);for(let i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return a;}
 function bytesToB64(a){let s="";a.forEach(b=>s+=String.fromCharCode(b));return btoa(s);}
@@ -28,6 +29,7 @@ async function unlock(){
     err.textContent = "";
     document.getElementById("lock").classList.add("hidden");
     document.getElementById("app").classList.remove("hidden");
+    try{ sessionStorage.setItem("dash_vault", JSON.stringify(VAULT)); }catch(e){}
   }catch(e){
     err.textContent = "That PIN doesn't match. Check the two leading zeros.";
     return;
@@ -41,6 +43,7 @@ async function unlock(){
 
 function lockSite(){
   VAULT = null; CURRENT_KEY = null; CURRENT_META = null;
+  try{ sessionStorage.removeItem("dash_vault"); }catch(e){}
   document.getElementById("pin").value = "";
   document.getElementById("app").classList.add("hidden");
   document.getElementById("lock").classList.remove("hidden");
@@ -54,8 +57,10 @@ function degInSign(lon){ return (((lon%360)+360)%360 % 30).toFixed(1); }
 function greeting(){
   const h = new Date().getHours();
   const g = h<12 ? "Good morning" : h<18 ? "Good afternoon" : "Good evening";
-  document.getElementById("greeting").textContent = g + ", Clarissa";
-  document.getElementById("today").textContent = new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"});
+  const ge = document.getElementById("greeting");
+  const td = document.getElementById("today");
+  if(ge) ge.textContent = g + ", Clarissa";
+  if(td) td.textContent = new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"});
 }
 
 
@@ -64,6 +69,7 @@ const ASPECTS = [[0,"conjunction"],[60,"sextile"],[90,"square"],[120,"trine"],[1
 
 function personList(elId, items, fmt){
   const el = document.getElementById(elId);
+  if(!el) return;
   if(!items || !items.length){ el.innerHTML = '<p class="empty">Nothing on file yet.</p>'; return; }
   el.innerHTML = items.map(fmt).join("");
 }
@@ -71,6 +77,7 @@ function personList(elId, items, fmt){
 function renderVault(){
   const v = VAULT;
   // Job ticker
+  if(document.getElementById("jobs")){
   const jobs = v.job_applications||[];
   const weekAgo = Date.now()-7*864e5;
   const thisWeek = jobs.filter(j=>j.date_applied && new Date(j.date_applied) >= weekAgo).length;
@@ -81,8 +88,10 @@ function renderVault(){
   document.getElementById("jobs").innerHTML = jobs.length ? '<div class="table-wrap"><table class="job-table"><thead><tr><th>Company</th><th>Role</th><th>Applied</th><th>Status</th><th>Location</th><th>Salary</th><th></th></tr></thead><tbody>' + sorted.map(j=>
     `<tr class="job-row" onclick="toggleJob(this)"><td><b>${j.company||"?"}</b></td><td>${j.role||""}</td><td>${fmtDate(j.date_applied)}</td><td>${j.status||"applied"}</td><td>${j.location||""}</td><td>${j.salary||""}</td><td class="exp-col"><span class="caret">&#9656;</span></td></tr><tr class="job-detail"><td colspan="7">${j.blurb?`<div class="jd"><b>About:</b> ${j.blurb}</div>`:""}${j.url?`<div class="jd"><b>Link:</b> <a class="joblink" href="${j.url}" target="_blank" rel="noopener">${j.url_label||"View posting &rarr;"}</a></div>`:""}${j.notes?`<div class="jd"><b>Notes:</b> ${j.notes}</div>`:""}</td></tr>`).join("") + '</tbody></table></div>'
     : '<p class="empty">No applications logged yet.</p>';
+  }
   // This week's calendar events (Google + pinned), undated pinned appointments after
   const apptEl = document.getElementById("appointments");
+  if(apptEl){
   const t0 = new Date(); t0.setHours(0,0,0,0);
   const ws = new Date(t0); ws.setDate(ws.getDate()-ws.getDay());
   const we = new Date(ws); we.setDate(we.getDate()+6);
@@ -97,13 +106,17 @@ function renderVault(){
   const undated = ((VAULT&&VAULT.appointments)||[]).filter(x=>!x.date);
   apptEl.innerHTML = week.length ? week.map(e=>`<div class="item"><b>${e.title}</b> <span class="sub">${e.d.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric"})}${e.time?" \u00B7 "+e.time:""}</span></div>`).join("") : '<p class="empty">Nothing on the calendar this week.</p>';
   if(undated.length) apptEl.innerHTML += undated.map(x=>`<div class="item"><b>${x.title||x.provider||"?"}</b>${x.notes?`<div class="sub">${x.notes}</div>`:""}</div>`).join("");
+  }
   personList("emails", v.important_emails, e=>`<div class="item"><b>${e.subject||"?"}</b> <span class="sub">${e.from||""}${e.date?" &middot; "+e.date:""}${e.why?" &middot; "+e.why:""}</span></div>`);
   renderSchedule();
   const jent = v.journal_entries||[];
-  document.getElementById("journal").innerHTML = jent.length ? jent.map(j=>`<div class="item">${j.text?`${j.text}<div class="sub">${j.date||""}</div>`:""}</div>`).join("") : "";
+  const jEl = document.getElementById("journal");
+  if(jEl) jEl.innerHTML = jent.length ? jent.map(j=>`<div class="item">${j.text?`${j.text}<div class="sub">${j.date||""}</div>`:""}</div>`).join("") : "";
   const doy = Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/864e5);
-  document.getElementById("prompt").textContent = window.JOURNAL_PROMPTS[doy % window.JOURNAL_PROMPTS.length];
-  document.getElementById("vault-editor").value = JSON.stringify(VAULT, null, 2);
+  const pEl = document.getElementById("prompt");
+  if(pEl) pEl.textContent = window.JOURNAL_PROMPTS[doy % window.JOURNAL_PROMPTS.length];
+  const veEl = document.getElementById("vault-editor");
+  if(veEl) veEl.value = JSON.stringify(VAULT, null, 2);
 }
 
 function toggleJob(tr){
@@ -128,6 +141,7 @@ async function downloadVault(){
 
 function horoscope(){
   const el = document.getElementById("horoscope");
+  if(!el) return;
   const A = window.Astronomy;
   if(!A){ el.textContent = "Horoscope unavailable right now."; return; }
   try{
@@ -224,4 +238,21 @@ function renderSchedule(userChanged){
 
 function render(){
   greeting(); horoscope(); renderVault();
+  const jc = document.getElementById("home-jobs");
+  if(jc && VAULT) jc.textContent = ((VAULT.job_applications||[]).length);
+  const ec = document.getElementById("home-emails");
+  if(ec && VAULT) ec.textContent = ((VAULT.important_emails||[]).length);
 }
+
+(function boot(){
+  try{
+    const s = sessionStorage.getItem("dash_vault");
+    if(s){
+      VAULT = JSON.parse(s);
+      document.getElementById("lock").classList.add("hidden");
+      document.getElementById("app").classList.remove("hidden");
+      render();
+      return;
+    }
+  }catch(e){}
+})();
