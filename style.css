@@ -9,7 +9,7 @@
 button{background:var(--gold);border:none;border-radius:8px;padding:10px 18px;font-weight:600;cursor:pointer;color:#1a1d29}
 .ghost{background:transparent;border:1px solid var(--line);color:var(--muted)}
 .lock-error{color:#e07a7a;font-size:.85rem;min-height:1.2em}
-.top{display:flex;justify-content:space-between;align-items:center;max-width:none;margin:24px auto 0;padding:0 100px 0 24px}
+.top{display:flex;justify-content:space-between;align-items:center;max-width:none;margin:24px auto 0;padding:0 24px 0 104px}
 .top h1{font-size:1.4rem;margin:0}
 .date-line{color:var(--muted);margin:2px 0 0;font-size:.9rem}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;max-width:none;margin:20px auto 40px;padding:0 24px}
@@ -32,7 +32,7 @@ h3{font-size:.85rem;margin:14px 0 6px;color:var(--muted);text-transform:uppercas
 textarea{width:100%;min-height:180px;background:#0e1018;color:var(--text);border:1px solid var(--line);border-radius:8px;padding:10px;font-family:ui-monospace,monospace;font-size:.82rem;margin-bottom:10px}
 @media(max-width:700px){.span2{grid-column:span 1}}
 
-.horoscope{font-size:8pt;line-height:1.6;color:var(--muted)}
+.horoscope{font-size:1rem;line-height:1.6;color:var(--muted)}
 select{background:var(--card);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:8px 10px;font:inherit;margin-bottom:10px}
 
 .banner-wrap{max-width:none;margin:16px auto 0;padding:0 24px}
@@ -80,11 +80,11 @@ select{background:var(--card);color:var(--text);border:1px solid var(--line);bor
 
 .day-ev.src-g{border-left-color:#7c9cf5}
 
-.menu-wrap{position:fixed;top:24px;right:24px;z-index:100;margin:0}
+.menu-wrap{position:fixed;top:24px;left:24px;z-index:100;margin:0}
 .hamburger{display:inline-flex;flex-direction:column;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:8px;padding:11px 12px;cursor:pointer}
 .hamburger span{display:block;width:20px;height:2px;background:var(--text)}
 .hamburger:hover{border-color:#3a3f52}
-.menu{display:none;flex-direction:column;position:absolute;top:calc(100% + 6px);right:0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px;min-width:170px;z-index:50;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.menu{display:none;flex-direction:column;position:absolute;top:calc(100% + 6px);left:0;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px;min-width:170px;z-index:50;box-shadow:0 10px 30px rgba(0,0,0,.45)}
 .menu.open{display:flex}
 .menu a{display:block;padding:9px 14px;color:var(--text);text-decoration:none;border-radius:6px;font-size:.95rem}
 .menu a:hover{background:#232736}
@@ -108,3 +108,8 @@ select{background:var(--card);color:var(--text);border:1px solid var(--line);bor
 .hbar-track{flex:1;background:var(--line);border-radius:4px;height:16px;overflow:hidden}
 .hbar-fill{height:100%;background:var(--gold)}
 .hbar-val{width:28px;flex:none;font-size:.75rem;color:var(--muted)}
+
+.tiles{grid-template-columns:repeat(3,minmax(0,300px));justify-content:center}
+.hub-card{aspect-ratio:1/1;display:flex;flex-direction:column}
+.hub-thumb{width:64px;height:64px;border-radius:14px;background:#232736;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:1.7rem;flex:none}
+.hub-card h2{margin-top:10px}
