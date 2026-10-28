@@ -63,8 +63,8 @@ select{background:var(--card);color:var(--text);border:1px solid var(--line);bor
 .job-table th{background:#0e1018;color:var(--muted);text-align:left;padding:8px;border:1px solid var(--line);font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap}
 .job-table td{padding:8px;border:1px solid var(--line);vertical-align:top}
 .job-table tbody tr:nth-child(even){background:rgba(255,255,255,.02)}
-.job-table td.about{color:var(--muted);font-size:.8rem}
-.job-table td.notes{color:var(--muted);font-size:.8rem;max-width:220px}
+.job-table td.about{color:var(--muted);font-size:.8rem;max-width:260px}
+.job-table td.notes{color:var(--muted);font-size:.8rem;width:300px;max-width:380px}
 
 .sched-month{color:var(--muted);font-size:.8rem;text-transform:none;letter-spacing:0;font-weight:400}
 .schedule-cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:14px}
