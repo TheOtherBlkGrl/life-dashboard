@@ -109,7 +109,7 @@ select{background:var(--card);color:var(--text);border:1px solid var(--line);bor
 .hbar-fill{height:100%;background:var(--gold)}
 .hbar-val{width:28px;flex:none;font-size:.75rem;color:var(--muted)}
 
-.tiles{grid-template-columns:repeat(3,minmax(0,300px));justify-content:center}
+.tiles{grid-template-columns:repeat(auto-fit,minmax(260px,1fr));max-width:1200px;margin-left:auto;margin-right:auto}
 .hub-card{aspect-ratio:1/1;display:flex;flex-direction:column}
 .hub-thumb{width:64px;height:64px;border-radius:14px;background:#232736;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:1.7rem;flex:none}
 .hub-card h2{margin-top:10px}
