@@ -53,6 +53,20 @@ document.getElementById("pin").addEventListener("keydown", e=>{ if(e.key==="Ente
 
 function sign(lon){ return window.SIGNS[Math.floor(((lon%360)+360)%360/30)]; }
 function degInSign(lon){ return (((lon%360)+360)%360 % 30).toFixed(1); }
+const EASTERN_TZ = "America/New_York";
+function easternDayKey(date){
+  return new Intl.DateTimeFormat("en-CA",{timeZone:EASTERN_TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(date);
+}
+function noonEasternMs(dayKey){
+  let guess = Date.parse(dayKey + "T12:00:00Z");
+  for(let i=0;i<2;i++){
+    const parts = new Intl.DateTimeFormat("en-US",{timeZone:EASTERN_TZ,hour12:false,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit"}).formatToParts(new Date(guess)).reduce((a,p)=>{a[p.type]=p.value;return a;},{});
+    const asUTC = Date.UTC(+parts.year, +parts.month-1, +parts.day, (+parts.hour)%24, +parts.minute, +parts.second);
+    const offset = asUTC - guess;
+    guess = Date.parse(dayKey + "T12:00:00Z") - offset;
+  }
+  return guess;
+}
 
 function toggleMenu(){
   const m = document.getElementById("menu");
@@ -156,7 +170,9 @@ function horoscope(){
   const A = window.Astronomy;
   if(!A){ el.textContent = "Horoscope unavailable right now."; return; }
   try{
-    const now = new Date();
+    const dayKey = easternDayKey(new Date());
+    window._horoDay = dayKey;
+    const now = new Date(noonEasternMs(dayKey));
     const ecl = b => A.Ecliptic(A.GeoVector(b, now, true)).elon;
     const t = {Sun:ecl(A.Body.Sun), Moon:ecl(A.Body.Moon), Mercury:ecl(A.Body.Mercury), Venus:ecl(A.Body.Venus), Mars:ecl(A.Body.Mars)};
     const moonSign = SIGNS[Math.floor(t.Moon/30)%12];
@@ -288,3 +304,7 @@ function renderAnalytics(){
     }
   }catch(e){}
 })();
+
+setInterval(function(){
+  if(window._horoDay && easternDayKey(new Date()) !== window._horoDay) horoscope();
+}, 60000);
